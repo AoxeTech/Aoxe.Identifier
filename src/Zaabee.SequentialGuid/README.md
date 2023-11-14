@@ -43,22 +43,22 @@ But now suppose we want to insert a row with an ID of 5:
 | 7 | Moriarty, J. |
 | 8 | Lestrade, I. |
 
-Rows 7 and 8 have to be moved down to make room.  Not such a big deal here, but when you're talking about inserting something into the middle of a table with millions of rows, it starts becoming an issue.  And when you want to do it a hundred times a second, it can really, really add up.  
+Rows 7 and 8 have to be moved down to make room.  Not such a big deal here, but when you're talking about inserting something into the middle of a table with millions of rows, it starts becoming an issue.  And when you want to do it a hundred times a second, it can really, really add up.
 
 And that's the problem with GUIDs: they may or may not be truly random, but most of them look random, in the sense that they're not usually generated to have any particular kind of order.  For that reason, it's generally considered a very bad practice to use a GUID value as part of a primary key in a database of any significant size.  Inserts can be very slow and involve a huge amount of unnecessary disk activity.
 
 ## Sequential GUIDs
 
-So, what's the solution?  Well, the main problem with GUIDs is their lack of sequence.  So, let's add a sequence.  The COMB approach (which stands for COMBined GUID/timestamp) replaces a portion of the GUID with a value which is guaranteed to increase, or at least not decrease, with each new value generated.  As the name implies, it does this by using a value generated from the current date and time.  
+So, what's the solution?  Well, the main problem with GUIDs is their lack of sequence.  So, let's add a sequence.  The COMB approach (which stands for COMBined GUID/timestamp) replaces a portion of the GUID with a value which is guaranteed to increase, or at least not decrease, with each new value generated.  As the name implies, it does this by using a value generated from the current date and time.
 
-To illustrate, consider this list of typical GUID values:  
+To illustrate, consider this list of typical GUID values:
 
 fda437b5-6edd-42dc-9bbd-c09d10460ad0
 2cb56c59-ef3d-4d24-90e7-835ed5968cdc
 6bce82f3-5bd2-4efc-8832-986227592f26
 42af7078-4b9c-4664-ba01-0d492ba3bd83
 
-Note that the values aren't in any particular order and appear essentially random.  Inserting a million rows with this type of value as the primary key could be quite slow. 
+Note that the values aren't in any particular order and appear essentially random.  Inserting a million rows with this type of value as the primary key could be quite slow.
 Now consider this hypothetical list of special GUID values:
 
 00000001-a411-491d-969a-77bf40f55175
@@ -74,9 +74,9 @@ Now that we have our basic concept, we need to get into some of the details of h
 
 11111111-2222-3333-4444-444444444444
 
-Data1 is four bytes, Data2 is two bytes, Data3 is two bytes, and Data4 is eight bytes (a few bits of Data3 and the first part of Data4 are reserved for version information, but that's more or less the structure).  
+Data1 is four bytes, Data2 is two bytes, Data3 is two bytes, and Data4 is eight bytes (a few bits of Data3 and the first part of Data4 are reserved for version information, but that's more or less the structure).
 
-Most GUID algorithms in use today, and especially those used by the .NET Framework, are pretty much just fancy random number generators (Microsoft used to include the local machine's MAC address as part of the GUID, but discontinued that practice several years ago due to privacy concerns).  This is good news for us, because it means that playing around with different parts of the value is unlikely to damage the value's uniqueness all that much.  
+Most GUID algorithms in use today, and especially those used by the .NET Framework, are pretty much just fancy random number generators (Microsoft used to include the local machine's MAC address as part of the GUID, but discontinued that practice several years ago due to privacy concerns).  This is good news for us, because it means that playing around with different parts of the value is unlikely to damage the value's uniqueness all that much.
 
 But unfortunately for us, different databases handle GUIDs in different ways.  Some systems (Microsoft SQL Server, PostgreSQL) have a built-in GUID type which can store and manipulate GUIDs directly.  Databases without native GUID support have different conventions on how they can be emulated.  MySQL, for example, most commonly stores GUIDs by writing their string representation to a char(36) column.  Oracle usually stores the raw bytes of a GUID value in a raw(16) column.
 
@@ -119,14 +119,14 @@ What makes the most sense to me is to start with a fresh random GUID.  Like I ju
 ```csharp
 var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
 byte[] randomBytes = new byte[10];
-rng.GetBytes(randomBytes);  
+rng.GetBytes(randomBytes);
 ```
 
 We use RNGCryptoServiceProvider to generate our random component because System.Random has some deficiencies that make it unsuitable for this purpose (the numbers it generates follow some identifiable patterns, for example, and will cycle after no more than 232 iterations).  Since we're relying on randomness to give us as much of a guarantee of uniqueness as we can realistically have, it's in our interests to make sure our initial state is as strongly random as it can be, and  RNGCryptoServiceProvider provides cryptographically strong random data.
 
 (It's also relatively slow, however, and so if performance is critical you might want to consider another method -- simply initializing a byte array with data from Guid.NewGuid(), for example.  I avoided this approach because Guid.NewGuid() itself makes no guarantees of randomness; that's just how the current implementation appears to work.  So, I choose to err on the side of caution and stick with a method I know will function reliably.)
 
-Okay, we now have the random portion of our new value, and all that remains is to replace part of it with our timestamp.  We decided on a six-byte timestamp, but what should it be based on?  One obvious choice would be to use DateTime.Now (or, as Rich Andersen points out, DateTime.UtcNow for better performance) and convert it to a six-byte integer value somehow.  The Ticks property is tempting: it returns the number of 100-nanosecond intervals that have elapsed since January 1, 0001 A.D.  However, there are a couple hitches. 
+Okay, we now have the random portion of our new value, and all that remains is to replace part of it with our timestamp.  We decided on a six-byte timestamp, but what should it be based on?  One obvious choice would be to use DateTime.Now (or, as Rich Andersen points out, DateTime.UtcNow for better performance) and convert it to a six-byte integer value somehow.  The Ticks property is tempting: it returns the number of 100-nanosecond intervals that have elapsed since January 1, 0001 A.D.  However, there are a couple hitches.
 
 First, since Ticks returns a 64-bit integer and we only have 48 bits to play with, we'd have to chop off two bytes, and the remaining 48 bits' worth of 100-nanosecond intervals gives us less than a year before it overflows and cycles.  This would ruin the sequential ordering we're trying to set up, and destroy the performance gains we're hoping for, and since many applications will be in service longer than a year, we have to use a less precise measure of time.
 
@@ -134,7 +134,7 @@ The other difficulty is that DateTime.UtcNow has a limited resolution.  Accordin
 
 The good news is, those two hitches sort of cancel each other out: the limited resolution means there's no point in using the entire Ticks value.  So, instead of using ticks directly, we'll divide by 10,000 to give us the number of milliseconds that have elapsed since January 1, 0001, and then the least significant 48 bits of that will become our timestamp.  I use milliseconds because, even though DateTime.UtcNow is currently limited to 10-millisecond resolution on some systems, it may improve in the future, and I'd like to leave room for that.  Reducing the resolution of our timestamp to milliseconds also gives us until about 5800 A.D. before it overflows and cycles; hopefully this will be sufficient for most applications.
 
-Before we continue, a short footnote about this approach: using a 1-millisecond-resolution timestamp means that GUIDs generated very close together might have the same timestamp value, and so will not be sequential.  This might be a common occurrence for some applications, and in fact I experimented with some alternate approaches, such as using a higher-resolution timer such as System.Diagnostics.Stopwatch, or combining the timestamp with a "counter" that would guarantee the sequence continued until the timestamp updated.  However, during testing I found that this made no discernible difference at all, even when dozens or even hundreds of GUIDs were being generated within the same one-millisecond window.  This is consistent with what Jimmy Nilsson encountered during his testing with COMBs as well.  With that in mind, I went with the method outlined here, since it's far simpler.  
+Before we continue, a short footnote about this approach: using a 1-millisecond-resolution timestamp means that GUIDs generated very close together might have the same timestamp value, and so will not be sequential.  This might be a common occurrence for some applications, and in fact I experimented with some alternate approaches, such as using a higher-resolution timer such as System.Diagnostics.Stopwatch, or combining the timestamp with a "counter" that would guarantee the sequence continued until the timestamp updated.  However, during testing I found that this made no discernible difference at all, even when dozens or even hundreds of GUIDs were being generated within the same one-millisecond window.  This is consistent with what Jimmy Nilsson encountered during his testing with COMBs as well.  With that in mind, I went with the method outlined here, since it's far simpler.
 
 Here's the code:
 
@@ -172,14 +172,14 @@ switch (guidType)
 }
 ```
 
-So far, so good.  But now we get to one of the eccentricities of the .NET Framework: it doesn't just treat GUIDs as a sequence of bytes.   For some reason, it regards a GUID as a struct containing a 32-bit integer, two 16-bit integers, and eight individual bytes.  In other words, it regards the Data1 block as an Int32, the Data2 and Data3 blocks as two Int16s, and the Data4 block as a Byte[8].  
+So far, so good.  But now we get to one of the eccentricities of the .NET Framework: it doesn't just treat GUIDs as a sequence of bytes.   For some reason, it regards a GUID as a struct containing a 32-bit integer, two 16-bit integers, and eight individual bytes.  In other words, it regards the Data1 block as an Int32, the Data2 and Data3 blocks as two Int16s, and the Data4 block as a Byte[8].
 
-What does this mean for us?  Well, the main issue has to do with byte ordering again.  Since .NET thinks it's dealing with numeric values, we have to compensate on little-endian systems -- BUT! -- only for applications that will be converting the GUID value to a string, and have the timestamp portion at the beginning of the GUID (the ones with the timestamp portion at the end don't have anything important in the "numeric" parts of the GUID, so we don't have to do anything with them).  
+What does this mean for us?  Well, the main issue has to do with byte ordering again.  Since .NET thinks it's dealing with numeric values, we have to compensate on little-endian systems -- BUT! -- only for applications that will be converting the GUID value to a string, and have the timestamp portion at the beginning of the GUID (the ones with the timestamp portion at the end don't have anything important in the "numeric" parts of the GUID, so we don't have to do anything with them).
 
 This is the reason I mentioned above for distinguishing between GUIDs that will be stored as strings and GUIDs that will be stored as binary data.  For databases that store them as strings, ORM frameworks and applications will probably want to use the ToString() method to generate SQL INSERT statements, meaning we have to correct for the endianness issue.  For databases that store them as binary data, they'll probably use Guid.ToByteArray() to generate the string for INSERTs, meaning no correction is necessary.  So, we have one last thing to add:
 
 ```csharp
-if (guidType == SequentialGuidType.SequentialAsString && 
+if (guidType == SequentialGuidType.SequentialAsString &&
     BitConverter.IsLittleEndian)
 {
   Array.Reverse(guidBytes, 0, 4);
@@ -209,7 +209,7 @@ To use our method, we first have to determine which type of GUID is best for our
 
 Here are a few examples generated by our new method.
 
-First, NewSequentialGuid(SequentialGuidType.SequentialAsString):  
+First, NewSequentialGuid(SequentialGuidType.SequentialAsString):
 
 39babcb4-e446-4ed5-4012-2e27653a9d13
 39babcb4-e447-ae68-4a32-19eb8d91765d
@@ -243,7 +243,7 @@ However, this problem is appearing because the four values in that list were gen
 39babcb4eb6a4129a9a5a500aac0c5cd
 39babcb4eb6c494da978c29cef95d37f
 
-This is how an ORM framework would most likely generate INSERT statements for an Oracle database, for example, and you can see that, when formatted this way, the sequence is again visible.  
+This is how an ORM framework would most likely generate INSERT statements for an Oracle database, for example, and you can see that, when formatted this way, the sequence is again visible.
 
 So, to recap, we now have a method that can generate sequential GUID values for any of three different database types: those that store as strings (MySQL, sometimes SQLite), those that store as binary data (Oracle, PostgreSQL), and Microsoft SQL Server, which has its own bizarre storage scheme.
 
