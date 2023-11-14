@@ -3,11 +3,11 @@
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>2023.2.2</PackageVersion>
-        <Version>2023.2.2</Version>
+        <PackageVersion>2023.2.3</PackageVersion>
+        <Version>2023.2.3</Version>
         <Authors>Mutuduxf</Authors>
         <Company>Mutuduxf</Company>
-        <PackageProjectUrl>https://github.com/PicoHex/Zaabee.Identifier</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/PicoHex/Zaabee.Identifier/tree/main/src/Zaabee.SequentialGuid</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>Sequential Guid (COMB) for SqlServer/MySQL/Oracle/PostgreSQL.</Description>
         <PackageTags>Zaabee;Sequential Guid;Comb</PackageTags>
