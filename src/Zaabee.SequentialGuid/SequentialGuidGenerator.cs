@@ -25,8 +25,7 @@ public static class SequentialGuidHelper
             case SequentialGuidType.AsBinary:
                 Buffer.BlockCopy(timestampBytes, 2, guidBytes, 0, 6);
                 Buffer.BlockCopy(randomBytes, 0, guidBytes, 6, 10);
-                // If formatting as a string, we have to reverse the order
-                // of the Data1 and Data2 blocks on little-endian systems.
+                // If formatting as a string, we have to reverse the order of the Data1 and Data2 blocks on little-endian systems.
                 if (guidType is SequentialGuidType.AsString && BitConverter.IsLittleEndian)
                 {
                     Array.Reverse(guidBytes, 0, 4);
