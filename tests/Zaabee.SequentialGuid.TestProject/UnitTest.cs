@@ -11,8 +11,10 @@ public class UnitTest
     public void TestSequential(SequentialGuidType sequentialGuidType)
     {
         var guids = new Guid[Quantity];
-        Enumerable.Range(0, Quantity).AsParallel().ForAll(p =>
-            guids[p] = SequentialGuidHelper.GenerateComb(sequentialGuidType));
+        Enumerable
+            .Range(0, Quantity)
+            .AsParallel()
+            .ForAll(p => guids[p] = SequentialGuidHelper.GenerateComb(sequentialGuidType));
         Assert.Equal(guids, guids.Distinct());
     }
 
@@ -21,6 +23,6 @@ public class UnitTest
     {
         Assert.Throws<ArgumentOutOfRangeException>(
             () => SequentialGuidHelper.GenerateComb((SequentialGuidType)5)
-            );
+        );
     }
 }
