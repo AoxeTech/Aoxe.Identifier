@@ -9,4 +9,3 @@ public enum SequentialGuidType
     AsBinary,
     AtEnd
 }
- 
