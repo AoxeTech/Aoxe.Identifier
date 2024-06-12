@@ -1,4 +1,4 @@
-# Zaabee.SequentialGuid
+# Aoxe.SequentialGuid
 
 Sequential Guid (COMB) from [GUIDs as fast primary keys under multiple databases](http://www.codeproject.com/Articles/388157/GUIDs-as-fast-primary-keys-under-multiple-database)
 

@@ -1,4 +1,4 @@
-namespace Zaabee.SequentialGuid.TestProject;
+namespace Aoxe.SequentialGuid.TestProject;
 
 public class UnitTest
 {

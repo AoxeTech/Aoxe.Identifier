@@ -4,9 +4,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2445A686-2E3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{81DE42BF-9E98-4347-87A4-EE3D5E9A3743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaabee.SequentialGuid", "src\Zaabee.SequentialGuid\Zaabee.SequentialGuid.csproj", "{1D6EC7E1-B9E3-47BD-8782-B1AF2D0FEBB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aoxe.SequentialGuid", "src\Aoxe.SequentialGuid\Aoxe.SequentialGuid.csproj", "{1D6EC7E1-B9E3-47BD-8782-B1AF2D0FEBB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaabee.SequentialGuid.TestProject", "tests\Zaabee.SequentialGuid.TestProject\Zaabee.SequentialGuid.TestProject.csproj", "{5353B525-929B-4CEA-A85C-6C0B65FE3313}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aoxe.SequentialGuid.TestProject", "tests\Aoxe.SequentialGuid.TestProject\Aoxe.SequentialGuid.TestProject.csproj", "{5353B525-929B-4CEA-A85C-6C0B65FE3313}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

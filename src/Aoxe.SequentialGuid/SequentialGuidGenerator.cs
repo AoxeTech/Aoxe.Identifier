@@ -1,4 +1,4 @@
-namespace Zaabee.SequentialGuid;
+namespace Aoxe.SequentialGuid;
 
 /// <summary>
 /// Sequential guid generator
