@@ -1,8 +1,0 @@
-﻿<Solution>
-  <Folder Name="/src/">
-    <Project Path="src\Aoxe.SequentialGuid\Aoxe.SequentialGuid.csproj" Type="Classic C#" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests\Aoxe.SequentialGuid.TestProject\Aoxe.SequentialGuid.TestProject.csproj" Type="Classic C#" />
-  </Folder>
-</Solution>
