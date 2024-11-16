@@ -2,12 +2,13 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
-        <PackageVersion>2025.1.0</PackageVersion>
-        <Version>2025.1.0</Version>
+        <PackageVersion>2025.1.2</PackageVersion>
+        <Version>2025.1.2</Version>
         <Description>A UUIDv7 implememt.</Description>
         <PackageTags>Aoxe;Identifier;UUID;UUIDv7</PackageTags>
         <PackageProjectUrl>https://github.com/AoxeTech</PackageProjectUrl>
         <RepositoryUrl>https://github.com/AoxeTech/Aoxe.Identifier</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
@@ -27,6 +28,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
