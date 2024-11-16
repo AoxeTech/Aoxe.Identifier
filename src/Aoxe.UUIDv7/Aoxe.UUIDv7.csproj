@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
-        <PackageVersion>2025.1.2</PackageVersion>
-        <Version>2025.1.2</Version>
+        <PackageVersion>2025.1.4</PackageVersion>
+        <Version>2025.1.4</Version>
         <Description>A UUIDv7 implememt.</Description>
         <PackageTags>Aoxe;Identifier;UUID;UUIDv7</PackageTags>
         <PackageProjectUrl>https://github.com/AoxeTech</PackageProjectUrl>

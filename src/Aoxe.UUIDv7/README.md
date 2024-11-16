@@ -1,101 +1,81 @@
 ﻿# Aoxe.UUIDv7
 
-Aoxe.UUIDv7 is a .NET library for generating UUID version 7 (time-ordered) compliant GUIDs. It combines the current Unix timestamp in milliseconds with random components to ensure uniqueness and orderability.
+Aoxe.UUIDv7 is a C# library for generating UUID version 7 identifiers based on the proposed RFC. It provides time-ordered UUIDs with improved sorting and uniqueness features.
 
-## Features
+- [1. Features](#1-features)
+- [2. Installation](#2-installation)
+- [3. Usage](#3-usage)
+- [4. API Reference](#4-api-reference)
+  - [4.1. `Uuid7Generator.GenerateUuid7()`](#41-uuid7generatorgenerateuuid7)
+  - [4.2. `Uuid7Generator.ToId25(this Guid uuid)`](#42-uuid7generatortoid25this-guid-uuid)
+  - [4.3. `Uuid7Generator.ToId22(this Guid uuid)`](#43-uuid7generatortoid22this-guid-uuid)
+- [5. Contributing](#5-contributing)
+- [6. License](#6-license)
 
-- **UUID Version 7**: Generates time-ordered UUIDs as per the latest specifications.
-- **RFC 4122 Variant**: Ensures the UUID conforms to the standard variant.
-- **Uniqueness**: Guarantees the generation of unique GUIDs.
-- ** Easy Integration**: Simple API for seamless integration into your projects.
+## 1. Features
 
-## Installation
+- Generate version 7 UUIDs.
+- Convert UUIDs to shorter string representations.
+- Optimized Base32 encoding.
+- Includes unit tests using xUnit.
 
-Install the package via NuGet:
+## 2. Installation
 
-```bash
-dotnet add package Aoxe.UUIDv7
-```
-
-## Usage
-
-```csharp
-using Aoxe.UUIDv7;
-using System;
-
-class Program
-{
-    static void Main()
-    {
-        Guid uuid = Uuid7Generator.GenerateUuid7();
-        Console.WriteLine(uuid);
-    }
-}
-```
-
-## Running Tests
-
-The project includes unit tests using XUnit. To run the tests, execute the following command in the project directory:
-
-```bash
-dotnet test
-```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License.
-
-# Aoxe.UUIDv7
-
-Aoxe.UUIDv7 is a .NET library for generating UUID version 7 (time-ordered) compliant GUIDs. It combines the current Unix timestamp in milliseconds with random components to ensure uniqueness and orderability.
-
-## Features
-
-- **UUID Version 7**: Generates time-ordered UUIDs as per the latest specifications.
-- **RFC 4122 Variant**: Ensures the UUID conforms to the standard variant.
-- **Uniqueness**: Guarantees the generation of unique GUIDs.
-- **Easy Integration**: Simple API for seamless integration into your projects.
-
-## Installation
-
-Install the package via NuGet:
+Install via NuGet Package Manager:
 
 ```bash
 dotnet add package Aoxe.UUIDv7
 ```
 
-## Usage
+Or via the Package Manager Console:
+
+```powershell
+Install-Package Aoxe.UUIDv7
+```
+
+## 3. Usage
 
 ```csharp
 using Aoxe.UUIDv7;
-using System;
 
 class Program
 {
     static void Main()
     {
+        // Generate a UUIDv7
         Guid uuid = Uuid7Generator.GenerateUuid7();
-        Console.WriteLine(uuid);
+
+        // Convert to a 25-character Base32 string
+        string id25 = uuid.ToId25();
+
+        // Convert to a 22-character Base64URL string
+        string id22 = uuid.ToId22();
+
+        Console.WriteLine($"UUIDv7: {uuid}");
+        Console.WriteLine($"ID25: {id25}");
+        Console.WriteLine($"ID22: {id22}");
     }
 }
 ```
 
-## Running Tests
+## 4. API Reference
 
-The project includes unit tests using NUnit. To run the tests, execute the following command in the project directory:
+### 4.1. `Uuid7Generator.GenerateUuid7()`
 
-```bash
-dotnet test
-```
+Generates a new UUID version 7.
 
-## Contributing
+### 4.2. `Uuid7Generator.ToId25(this Guid uuid)`
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+Converts a UUID to a 25-character Base32 encoded string.
 
-## License
+### 4.3. `Uuid7Generator.ToId22(this Guid uuid)`
+
+Converts a UUID to a 22-character Base64URL encoded string.
+
+## 5. Contributing
+
+Contributions are welcome. Please submit issues and pull requests for any improvements.
+
+## 6. License
 
 This project is licensed under the MIT License.

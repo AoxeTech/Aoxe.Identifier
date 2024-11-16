@@ -2,32 +2,31 @@
 
 public static class Uuid7Generator
 {
-    /// <summary>
-    /// Generates a UUID version 7 (time-ordered) UUID as per the latest proposals.
-    /// Combines the current Unix timestamp in milliseconds with random components.
-    /// </summary>
-    /// <returns>A UUIDv7 as a Guid object.</returns>
     public static Guid GenerateUuid7()
     {
         var guidBytes = new byte[16];
-        var unixTimeMillis = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-        // Insert timestamp (48 bits) into the first 6 bytes (big-endian)
-        guidBytes[0] = (byte)(unixTimeMillis >> 40);
-        guidBytes[1] = (byte)(unixTimeMillis >> 32);
-        guidBytes[2] = (byte)(unixTimeMillis >> 24);
-        guidBytes[3] = (byte)(unixTimeMillis >> 16);
-        guidBytes[4] = (byte)(unixTimeMillis >> 8);
-        guidBytes[5] = (byte)unixTimeMillis;
+        // Get current Unix time in milliseconds
+        var unixTimeMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-        // Set the UUID version to 7 (4 bits)
-        guidBytes[6] = (byte)((guidBytes[6] & 0x0F) | (7 << 4));
+        // First 6 bytes are the timestamp
+        guidBytes[0] = (byte)(unixTimeMs >> 40);
+        guidBytes[1] = (byte)(unixTimeMs >> 32);
+        guidBytes[2] = (byte)(unixTimeMs >> 24);
+        guidBytes[3] = (byte)(unixTimeMs >> 16);
+        guidBytes[4] = (byte)(unixTimeMs >> 8);
+        guidBytes[5] = (byte)(unixTimeMs);
 
-        // Generate random bytes for bytes7-15 in a single call
+        // Generate random bytes for bytes 6-15
         using (var rng = RandomNumberGenerator.Create())
-            rng.GetBytes(guidBytes, 7, 9);
+        {
+            rng.GetBytes(guidBytes, 6, 10);
+        }
 
-        // Set the UUID variant to RFC 4122 (10xx)
+        // Set the UUID version to 7 (upper 4 bits of byte 6)
+        guidBytes[6] = (byte)((guidBytes[6] & 0x0F) | 0x70);
+
+        // Set the UUID variant to RFC 4122 (upper 2 bits of byte 8)
         guidBytes[8] = (byte)((guidBytes[8] & 0x3F) | 0x80);
 
         return new Guid(guidBytes);
