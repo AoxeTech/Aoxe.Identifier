@@ -1,6 +1,6 @@
 namespace Aoxe.SequentialGuid.TestProject;
 
-public class UnitTest
+public class SequentialGuidTest
 {
     private const int Quantity = 5;
 
