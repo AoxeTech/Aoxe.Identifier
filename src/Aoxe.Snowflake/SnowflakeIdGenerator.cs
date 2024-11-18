@@ -20,6 +20,9 @@ public class SnowflakeIdGenerator
     private long _lastTimestamp = -1L;
     private long _sequence;
 
+    private readonly long _workerIdShifted;
+    private readonly long _datacenterIdShifted;
+
     public long WorkerId { get; }
     public long DatacenterId { get; }
 
@@ -39,6 +42,9 @@ public class SnowflakeIdGenerator
 
         WorkerId = workerId;
         DatacenterId = datacenterId;
+
+        _workerIdShifted = workerId << WorkerIdShift;
+        _datacenterIdShifted = datacenterId << DatacenterIdShift;
     }
 
     public long NextId()
@@ -46,36 +52,30 @@ public class SnowflakeIdGenerator
         var timestamp = GetCurrentTimestamp();
 
         if (timestamp < _lastTimestamp)
-        {
-            // Wait until the clock moves forward
-            timestamp = WaitUntilNextMillis(_lastTimestamp);
-        }
+            throw new InvalidOperationException(
+                $"Clock moved backwards. Refusing to generate id for {_lastTimestamp - timestamp} milliseconds"
+            );
 
         if (_lastTimestamp == timestamp)
         {
-            // Increment sequence within the same millisecond
             _sequence = (_sequence + 1) & SequenceMask;
             if (_sequence == 0)
-            {
-                // Sequence overflow, wait until next millisecond
-                timestamp = WaitUntilNextMillis(_lastTimestamp);
-            }
+                timestamp = WaitForNextMillis(_lastTimestamp);
         }
         else
         {
-            // Reset sequence for a new millisecond
             _sequence = 0;
         }
 
         _lastTimestamp = timestamp;
 
         return ((timestamp - Twepoch) << TimestampLeftShift)
-            | (DatacenterId << DatacenterIdShift)
-            | (WorkerId << WorkerIdShift)
+            | _datacenterIdShifted
+            | _workerIdShifted
             | _sequence;
     }
 
-    private long WaitUntilNextMillis(long lastTimestamp)
+    private long WaitForNextMillis(long lastTimestamp)
     {
         var timestamp = GetCurrentTimestamp();
         while (timestamp <= lastTimestamp)

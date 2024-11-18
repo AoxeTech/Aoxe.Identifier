@@ -55,7 +55,7 @@ public class SnowflakeIdGeneratorTest
             .GetField(
                 "_sequence",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-            )
+            )!
             .SetValue(generator, (1L << 12) - 1);
 
         var lastTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -64,9 +64,9 @@ public class SnowflakeIdGeneratorTest
             .GetMethod(
                 "WaitUntilNextMillis",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-            )
-            .Invoke(generator, new object[] { lastTimestamp });
+            )!
+            .Invoke(generator, [lastTimestamp]);
 
-        Assert.True((long)nextTimestamp > lastTimestamp);
+        Assert.True((long)nextTimestamp! > lastTimestamp);
     }
 }
